@@ -15,7 +15,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 # Create your views here.
 def index(request):
-    resume = Resume.get_object_or_404(Resume, pk=id)
+    resume = Resume.objects.get(pk=1)
     if request.method == "POST":
         form = CommentForm2(request.POST)   
         if form.is_valid():
