@@ -1,0 +1,27 @@
+{% extends "blog/base.html" %}
+{% block content %}
+{% if not user.is_authenticated %}
+<script type="text/javascript">
+  alert('로그인 후 이용해 주세요.')
+  window.location.href = '/';
+</script>
+{% else %}
+<div class="member_info">
+  <label>사용자이름:</label><div id="user"><p>{{ request.user }}</p></div>
+  <label>이름:</label><div id="user"><p>{{ request.user.first_name }}</p></div>
+  <label>이메일:</label><div id="user"><p>{{ request.user.email }}</p></div>
+  <form method="post" class="change_password">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="member_btn btn btn-default">비밀번호 변경</button>
+  </form>
+<!--{% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+      <li class="error">{{ message }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}-->
+{% endif %}
+</div>
+{% endblock content %}

@@ -1,0 +1,23 @@
+{% extends "blog/base.html" %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<script type="text/javascript">
+  alert('잘못된 접근입니다. \n회원가입을 위해서는 로그아웃이 필요합니다.')
+  window.location.href = '/';
+</script>
+{% else %}
+<div class="member_header">
+<h2>회원가입</h2>
+</div>
+<div class="member">
+<form method="post" action="">{% csrf_token %}
+    {{ form.as_p }}
+    {% if form.password.value != form.repassword.value %}
+        <p class="error ">비밀번호가 맞지 않습니다.</p>
+    {% endif %}  
+    <input type="submit" value="회원가입" class="member_btn btn btn-default"/> 
+</form>
+</div>
+{% endif %}
+{% endblock %}

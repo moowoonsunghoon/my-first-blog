@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '^z-8@8h#m1(d=ar8r!j&(0yw)!095j24&-n+(v!xvvf8h%@ew0'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', '.pythonanywhere.com']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'blog',
+    'el_pagination',
+    'hitcount',
 ]
 
 MIDDLEWARE = [
@@ -121,9 +123,21 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-
+# Media
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 # login
 LOGIN_REDIRECT_URL = '/'
 
 # logout
 LOGOUT_REDIRECT_URL = '/'
+
+# page
+EL_PAGINATION_PER_PAGE = 20
+EL_PAGINATION_DEFAULT_CALLABLE_ARROWS = False
+EL_PAGINATION_PREVIOUS_LABEL = '이전'
+EL_PAGINATION_NEXT_LABEL = '다음'
+EL_PAGINATION_FIRST_LABEL = '처음'
+EL_PAGINATION_LAST_LABEL = '끝'
+EL_PAGINATION_DEFAULT_CALLABLE_EXTREMES = 1
+EL_PAGINATION_DEFAULT_CALLABLE_AROUNDS = 4

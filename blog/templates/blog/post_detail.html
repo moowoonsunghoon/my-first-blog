@@ -2,18 +2,46 @@
 
 {% block content %}
     <div class="post">
-        {% if post.published_date %}
-            <div class="date">
-                {{ post.published_date }}
-            </div>
-        {% else %}
-            <a class="btn btn-default" href="{% url 'post_publish' pk=post.pk %}">Publish</a>
-        {% endif %}
-        {% if user.is_authenticated %}
-     <a class="btn btn-default" href="{% url 'post_edit' pk=post.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
-     <a class="btn btn-default" href="{% url 'post_remove' pk=post.pk %}"><span class="glyphicon glyphicon-remove"></span></a>
-        {% endif %}
-        <h1>{{ post.title }}</h1>
-        <p>{{ post.text|linebreaksbr }}</p>
+        <div class="post_title">
+            <div class="ti col-md-8 col-xs-12">{{ post.title }}</div>
+            <div class="au col-md-2 col-xs-12">{{ post.author}}</div>
+            <div class="da col-md-2 col-xs-12">{{ post.published_date|date:"y.n.d,  h:i:s" }}</div>
+        </div>
+        <div class="text">{{ post.text|linebreaksbr }}</div>
+        <div class="btns">
+            {% if post.author == request.user or user.is_superuser %}
+            <a class="btn-right btn btn-default" href="{% url 'post_remove' post.id %}">삭제</a>
+            <a class="btn-right btn btn-default" href="{% url 'post_edit' post.id %}">수정</span></a>
+            {% endif %}
+            <a href="{% url 'post_list' %}" class="btn-right btn btn-default">목록</a>
+        </div>
     </div>
+    <div style="margin: 0 auto 10px auto; padding-left: 15px;" class="reply">댓글 {{ post.comments.count }}</div>
+    <div class="comments">
+        {% for comment in post.comments.all %}
+        {% if user.is_authenticated %}
+        <div class="comment">
+            <div class="date">
+                <strong>{{ comment.author }}</strong> <span>{{ comment.created_date|date:"y.n.d,  h:i:s" }}</span>
+            {% if comment.author == request.user or user.is_superuser %}
+                <a class="btn-right btn btn-default" href="{% url 'comment_remove' comment.id %}"><span class="glyphicon glyphicon-remove"></span></a>
+            {% endif %}
+            </div>
+            <p>{{ comment.text|linebreaks }}</p>
+        {% if not forloop.last %}
+            <div class="line"></div>
+        {% endif %}           
+        </div>
+        {% endif %}
+        {% empty %}
+            <p style="margin-bottom: 10px; padding: 10px 0 0 15px">제일 먼저 댓글을 달아보세요!</p>
+        {% endfor %}
+         <form method="POST" class="post-form">{% csrf_token %}
+            <div class="comment_form">
+                {{ form }}
+                <button type="submit" class="btn btn-default btn-comment">등록</button>
+                <p class='nums' style='position:absolute; right:20px; bottom:45px'>0/300</p>
+            </div>         
+    </div>
+               
 {% endblock %}

@@ -1,12 +1,109 @@
 {% extends 'blog/base.html' %}
 {% block content %}
-    {% for post in posts %}
-        <div class="post">
-            <div class="date">
-                {{ post.published_date }}
-            </div>
-            <h1><a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a></h1>
-            <p>{{ post.text|linebreaksbr }}</p>
+
+<div class="posts">
+<h1 >게시판</h1>
+<p style="text-align:right;">게시물 {{contacts.paginator.count}}개</p>
+    <table class="noticetable">
+        <colgroup>
+            <col style="width:20%">
+            <col style="width:4%">
+            <col style="width:3%">
+            <col style="width:5%">
+        </colgroup>
+        <thead>
+            <tr>
+                <td>제 목</td>
+                <td>글쓴이</td>
+                <td>날 짜</td>
+                <td>댓 글</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% if q == '' %}
+                {% for contact in contacts %}
+                <tr style ="border-bottom: 1px solid #ddd">
+                    <td><a href="{% url 'post_detail' contact.id %}">{{ contact.title | truncatechars:12}}</a></td>
+                    <td>{{ contact.author | truncatechars:7 }}</td>
+                    <td>{{ contact.published_date| date:"y/n/d"}}</td>
+                    <td>{{ contact.comments.count }}</td>
+                </tr>
+            {% endfor %}
+            {% elif  type == 'title' or type == 'titletext' %}
+                {% for contact in contacts %}
+                <tr style ="border-bottom: 1px solid #ddd">
+                        <td><a href="{% url 'post_detail' contact.id %}">{{ contact.title | truncatechars:12 }}</a></td>
+                        <td>{{ contact.author | truncatechars:7 }}</td>
+                        <td>{{ contact.published_date| date:"y/n/d"}}</td>
+                        <td>{{ contact.comments.count }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr style ="border-bottom: 1px solid #ddd">
+                        <td colspan="7">검색 결과가 없습니다.</td>
+                    </tr>  
+                {% endfor %}
+            {% elif type == 'author_id' %}
+                {% for contact in contacts %}
+                    <tr style ="border-bottom: 1px solid #ddd">
+                        <td><a href="{% url 'post_detail' contact.id %}">{{ contact.title | truncatechars:12 }}</a></td>
+                        <td>{{ contact.author | truncatechars:7 }}</td>
+                        <td>{{ contact.published_date| date:"y/n/d"}}</td>
+                        <td>{{ contact.comments.count }}</td>
+                    </tr>
+                    {% empty %}
+                        <tr style ="border-bottom: 1px solid #ddd">
+                            <td colspan="7">검색 결과가 없습니다.</td>
+                        </tr>   
+                {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+<form action="" method="get" class="noticeform">
+    {% if q == '' %}
+        <div class="pagination">    
+        {% load el_pagination_tags %}
+            {% paginate  paginators %}
+                {% for page in paginators %} 
+                {% endfor %}
+            {% show_pages %}
         </div>
-    {% endfor %}
+    {% elif type == 'title' or type == 'titletext' %}
+            <div class="pagination">
+            {% load el_pagination_tags %}
+                {% paginate  paginators %}
+                    {% for page in paginators %}
+                    {% endfor %}
+                    {% get_pages %}
+                    {% if pages|length > 1 %}
+                         {{ pages.get_rendered }}
+                    {% else %}
+                        <strong>1</strong>
+                    {% endif %}     
+                </div>                
+    {% elif type == 'author_id'%}
+      <div class="pagination">
+        {% load el_pagination_tags %}
+            {% paginate  paginators %}
+                {% for page in paginators %}
+                {% endfor %}
+                {% get_pages %}
+                {% if pages|length > 1 %}
+                    {{ pages.get_rendered }}
+                {% else %}
+                    <strong>1</strong>
+                {% endif %}  
+            </div>        
+    {% endif %}
+        <a href="{% url 'post_new' %}" class="btn-right btn btn-default">글쓰기</a>
+        <div class="searchform">
+            <select name="type" id="">              
+                    <option value="title" {{ s1 }}>제목</option>
+                    <option value="titletext" {{ s2 }}>제목+내용</option>
+                    <option value="author_id" {{ s3 }}>글쓴이</option>
+                </select>
+            <input class="search" type="text" name="q" value="{{ q }}">
+            <input type="submit" value="검색" class="btn btn-default">
+        </div>
+</form>
 {% endblock %}

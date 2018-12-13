@@ -1,0 +1,131 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="resume">
+    <div class="person">
+    <div class="photo col-md-4 col-sm-4 col-xs-12" style="padding:0">
+        <img src="{{ resume.photo.url }}" class="img-rounded">
+         <div class="name col-md-12 col-sm-12 col-xs-12">
+            <i class="far fa-id-card col-md-5 col-sm-5 col-xs-6" style="text-align:right;"></i>     
+            <div class="col-md-5 col-sm-5 col-xs-6">
+                <p><strong>NAME</strong></p>
+                <p>{{ resume.name }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="profile col-md-8 col-sm-8 col-xs-12">
+        <div class="birth col-md-6 col-sm-6 col-xs-6">
+        <i class="fas fa-birthday-cake col-md-6 col-sm-3 col-xs-3"></i>
+        <div class="col-md-6 col-sm-9 col-xs-9">
+            <p><strong>BIRTH</strong></p>
+            <p>{{ resume.birth }}</p>
+        </div>
+    </div>
+    <div class="email col-md-6 col-sm-6 col-xs-6">
+        <i class="far fa-envelope col-md-6 col-sm-3 col-xs-3"></i>      
+        <div class="col-md-6 col-sm-9 col-xs-9">
+            <p><strong>E-MAIL</strong></p>
+            <p>{{ resume.email }}</p>     
+        </div>
+    </div>
+    <div class="number col-md-6 col-sm-6 col-xs-6">
+        <i class="fas fa-mobile-alt col-md-6 col-sm-3 col-xs-3"></i>
+        <div class="col-md-6 col-sm-9 col-xs-9">
+            <p><strong>PHONE</strong></p>
+            <p>{{ resume.number }}</p>     
+        </div>
+    </div>
+    <div class="number col-md-6 col-sm-6 col-xs-6">
+        <i class="fas fa-home col-md-6 col-sm-3 col-xs-3"></i>
+        <div class="col-md-6 col-sm-9 col-xs-9">
+            <p><strong>HOME</strong></p>
+            <p>어디든지 이사 가능</p>     
+        </div>
+    </div>
+    <div class="edu col-md-6 col-sm-6 col-xs-6">
+        <i class="fas fa-school col-md-6 col-sm-3 col-xs-3"></i>
+        <div class="col-md-6 col-sm-9 col-xs-9">
+            <p><strong>EDUCATION</strong></p>
+            <p>{{ resume.education }}</p>     
+        </div>
+    </div>
+    <div class="port col-md-6 col-sm-6 col-xs-6">
+        <i class="fab fa-chrome col-md-6 col-sm-3 col-xs-3"></i>
+        <div class="col-md-6 col-sm-9 col-xs-9">
+            <p><strong>PORTFOLIO</strong></p>
+            <p><a href="http://yesstartup.co">{{ resume.portfolio }}</a></p> 
+            <p><a href="/">현재 페이지</a></p>  
+        </div>       
+    </div>
+    <div class="career col-md-12 col-sm-12 col-xs-12">
+        <i class="far fa-clipboard col-md-3 col-sm-2 col-xs-2"></i>
+        <div class="col-md-9 col-sm-10 col-xs-10"> 
+            <p><strong>CAREER</strong></p>
+            <p>{{ resume.career }}</p>     
+        </div>
+    </div>
+    </div>
+</div>
+</div>
+    <div class="skill">     
+        <div class="content">
+            <p class="labels">SKILLS</p>
+            <img src="{% static 'blog/html2.jpg' %}" alt="">
+            <img src="{% static 'blog/css2.jpg' %}" alt="">
+            <img src="{% static 'blog/js2.jpg' %}" alt="">   
+            <img src="{% static 'blog/jquery2.jpg' %}" alt="">
+            <img src="{% static 'blog/boot2.jpg' %}" alt="">
+            <img src="{% static 'blog/python2.jpg' %}" alt="">
+            <img src="{% static 'blog/django.png' %}" alt="">
+        </div>
+    </div>
+    
+    {% autoescape off %}
+    <div class="introduce">
+        <div class="content self">{{ resume.introduce | linebreaks | escape}}</div>
+    </div>
+    {% endautoescape%}
+    
+<div style="margin: 0 auto 10px auto; padding-left: 15px; width:95%;">댓글 {{ resume.comments.count }}</div>
+<div class="comments2">
+        {% for comment in resume.comments.all %}
+        <div class="comment">
+            <div class="date">
+                <strong>{{ comment.author }}</strong><span>{{ comment.created_date|date:"y.n.d,  h:i:s" }}</span>
+            {% if comment.author == request.user or user.is_superuser %}
+                <a class="btn-right btn btn-default" href="{% url 'comment2_remove' comment.id %}"><span class="glyphicon glyphicon-remove"></span></a>
+            {% endif %}
+            </div>
+            {% if comment.author == request.user or user.is_superuser %}
+                <p>{{ comment.text|linebreaks }}</p>
+                {% if not forloop.last %}
+                    <div class="line"></div>
+                {% endif %}
+            {% else %}
+            <p>비밀글 입니다.</p>
+                {% if not forloop.last %}
+                    <div class="line"></div>
+                {% endif %}
+            {% endif %}
+        </div>
+        {% empty %}
+            <p style="margin-bottom: 10px; padding: 10px 0 0 15px">저를 채용해가실 회사는 댓글을 남겨주세요! 모든 글은 비밀글로 작성됩니다.</p>
+        {% endfor %}
+        {% if user.is_authenticated %}
+        <form method="POST" class="post-form">{% csrf_token %}
+            <div class="comment_form">
+                {{ form }}
+                <button type="submit" class="btn btn-default btn-comment" style="height:40px;">등록</button>
+                <p class='nums' style='position:absolute; right:20px; bottom:45px'>0/300</p>
+            </div>
+        </form>
+        {% else %}
+            <div class="comment_form">
+                {{ form }}
+                <a href="{% url 'login' %}" class="btn btn-default btn-comment login_submit" style="right:21px" >로그인</a>
+                <p class='nums' style='position:absolute; right:20px; bottom:45px'>0/300</p>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

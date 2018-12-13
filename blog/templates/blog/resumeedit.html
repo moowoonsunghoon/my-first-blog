@@ -1,0 +1,11 @@
+{% extends "blog/base.html" %}
+{% block content %}
+{% if not user.is_superuser %}
+<script type="text/javascript">
+  alert('잘못된 접근입니다.')
+  window.location.href = '/';
+</script>
+{% else %}
+    {{ form.as_p }}
+{% endif %}
+{% endblock content %}
