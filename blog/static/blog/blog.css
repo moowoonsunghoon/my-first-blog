@@ -296,6 +296,12 @@ thead {
   color: rgb(255, 96, 0);
 }
 
+.pagination strong {
+  text-decoration-line: underline;
+  color: rgb(255, 96, 0);
+}
+
+
 .content {
   padding: 25px 15px 25px 15px;
 }
@@ -753,7 +759,7 @@ thead {
   }
 
   .footer{
-    bottom:-50px;
+    bottom:-100px;
   }
 
 

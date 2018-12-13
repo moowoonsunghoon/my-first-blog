@@ -66,7 +66,12 @@
             {% paginate  paginators %}
                 {% for page in paginators %} 
                 {% endfor %}
-            {% show_pages %}
+                {% get_pages %}
+                    {% if pages|length > 1 %}
+                         {{ pages.get_rendered }}
+                    {% else %}
+                        <strong>1</strong>
+            {% endif %} 
         </div>
     {% elif type == 'title' or type == 'titletext' %}
             <div class="pagination">
